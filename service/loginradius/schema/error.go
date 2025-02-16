@@ -3,7 +3,7 @@ package schema
 import "errors"
 
 type ErrorResponse struct {
-	ErroCode    int    `json:"ErrorCode"`
+	ErrorCode   int    `json:"ErrorCode"`
 	Message     string `json:"Message"`
 	Description string `json:"Description"`
 	ErrorInfo   string `json:"ErrorInfo"`
@@ -11,7 +11,7 @@ type ErrorResponse struct {
 
 func GetSomethingWentWrongError() *ErrorResponse {
 	return &ErrorResponse{
-		ErroCode:    500,
+		ErrorCode:   500,
 		Message:     "Something went wrong",
 		Description: "Please try again later",
 		ErrorInfo:   "Something went wrong",

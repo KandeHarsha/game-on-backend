@@ -52,3 +52,31 @@ func (c *Config) Login(ctx context.Context, loginRequestModel *models.LoginReque
 	response := r.Response.(*schema.IdentityResponseWithToken)
 	return response, nil
 }
+
+func (c *Config) Register(ctx context.Context, registerRequestModel *models.RegisterRequest) (*models.RegisterAPIResponse, *schema.ErrorResponse) {
+	lrRegisterRequest := models.CreateAccountRequest{
+		Email: []models.EmailType{
+			{
+				Type:  "Primary",
+				Value: registerRequestModel.Email,
+			},
+		},
+		Password: registerRequestModel.Password,
+		UserName: registerRequestModel.Username,
+	}
+	r := lib.Request{
+		Method: http.MethodPost,
+		Path:   c.getPath("/identity/v2/manage/account"),
+		Query: map[string]string{
+			"apikey":    c.ApiKey,
+			"apisecret": c.ApiSecret,
+		},
+		Payload:  lrRegisterRequest,
+		Response: &models.RegisterAPIResponse{},
+	}
+	if vErr := r.Do(); vErr != nil {
+		return nil, vErr
+	}
+	response := r.Response.(*models.RegisterAPIResponse)
+	return response, nil
+}

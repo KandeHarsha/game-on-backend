@@ -10,6 +10,7 @@ type Identity struct {
 	ID        string  `bsonn:"id" json:"id"`
 	Email     []Email `bsonn:"email" json:"email"`
 	Uid       string  `bsonn:"uid" json:"uid"`
+	UserName  string  `bsonn:"username" json:"username"`
 }
 
 type Email struct {
