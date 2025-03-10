@@ -80,3 +80,20 @@ func (c *Config) Register(ctx context.Context, registerRequestModel *models.Regi
 	response := r.Response.(*models.RegisterAPIResponse)
 	return response, nil
 }
+
+func (c *Config) GetAllOrgs(ctx context.Context) (*models.OrganizationData, *schema.ErrorResponse) {
+	r := lib.Request{
+		Method: http.MethodGet,
+		Path:   c.getPath("/v2/manage/organizations"),
+		Query: map[string]string{
+			"apikey":    c.ApiKey,
+			"apisecret": c.ApiSecret,
+		},
+		Response: &models.OrganizationData{},
+	}
+	if vErr := r.Do(); vErr != nil {
+		return nil, vErr
+	}
+	response := r.Response.(*models.OrganizationData)
+	return response, nil
+}

@@ -28,5 +28,8 @@ func main() {
 	authRouter := baseGroup.Group("/auth")
 	handler.NewAuthHandler(authRouter)
 
+	orgRouter := baseGroup.Group("/org")
+	handler.NewOrgHandler(orgRouter)
+
 	r.Run("0.0.0.0:4000") // listen and serve on port 4000
 }
