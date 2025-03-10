@@ -52,3 +52,16 @@ type Policy struct {
 type OrganizationData struct {
 	Data []Organization
 }
+
+type CreateOrgRequest struct {
+	Name     string            `json:"Name"`
+	Metadata map[string]string `json:"Metadata,omitempty"`
+}
+
+type CreateOrgResponse struct {
+	Data Organization `json:"Data"`
+}
+
+type GetOrganizationResponse struct {
+	Data Organization `json:"Data"`
+}

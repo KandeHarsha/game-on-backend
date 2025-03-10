@@ -97,3 +97,38 @@ func (c *Config) GetAllOrgs(ctx context.Context) (*models.OrganizationData, *sch
 	response := r.Response.(*models.OrganizationData)
 	return response, nil
 }
+
+func (c *Config) GetOrg(ctx context.Context, orgId string) (*models.Organization, *schema.ErrorResponse) {
+	r := lib.Request{
+		Method: http.MethodGet,
+		Path:   c.getPath("/v2/manage/organizations/" + orgId),
+		Query: map[string]string{
+			"apikey":    c.ApiKey,
+			"apisecret": c.ApiSecret,
+		},
+		Response: &models.Organization{},
+	}
+	if vErr := r.Do(); vErr != nil {
+		return nil, vErr
+	}
+	response := r.Response.(*models.Organization)
+	return response, nil
+}
+
+func (c *Config) CreateOrg(ctx context.Context, createOrgRequest *models.CreateOrgRequest) (*models.CreateOrgResponse, *schema.ErrorResponse) {
+	r := lib.Request{
+		Method: http.MethodPost,
+		Path:   c.getPath("/v2/manage/organizations"),
+		Query: map[string]string{
+			"apikey":    c.ApiKey,
+			"apisecret": c.ApiSecret,
+		},
+		Payload:  createOrgRequest,
+		Response: &models.CreateOrgResponse{},
+	}
+	if vErr := r.Do(); vErr != nil {
+		return nil, vErr
+	}
+	response := r.Response.(*models.CreateOrgResponse)
+	return response, nil
+}
