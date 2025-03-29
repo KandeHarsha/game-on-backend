@@ -21,6 +21,8 @@ func NewAuthHandler(group *gin.RouterGroup) {
 
 	group.POST("/login", h.Login)
 	group.POST("/register", h.Register)
+	group.GET("/user/:uid", h.getUser)
+	group.GET("/profile", h.profileByAccesstoken)
 }
 
 func (h *AuthHandler) Login(ctx *gin.Context) {
@@ -88,4 +90,40 @@ func (h *AuthHandler) Register(c *gin.Context) {
 		Data:    response.Data,
 	})
 
+}
+
+func (h *AuthHandler) getUser(ctx *gin.Context) {
+	uid := ctx.Param("uid")
+	if uid == "" {
+		ctx.JSON(400, gin.H{
+			"error": "uid is required",
+		})
+		return
+	}
+	user, err := h.loginLogic.GetUserByUid(context.Background(), uid)
+	if err != nil {
+		ctx.JSON(400, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	ctx.JSON(200, user)
+}
+
+func (h *AuthHandler) profileByAccesstoken(ctx *gin.Context) {
+	token := ctx.Query("access_token")
+	if len(token) == 0 {
+		ctx.JSON(403, gin.H{
+			"error": "access_token is required",
+		})
+	}
+
+	resp, err := h.loginLogic.GetProfile(context.Background(), token)
+	if err != nil {
+		ctx.JSON(400, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	ctx.JSON(200, resp)
 }

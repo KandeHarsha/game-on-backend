@@ -6,6 +6,7 @@ import (
 	"KandeHarsha/service/loginradius"
 	"context"
 	"errors"
+	"fmt"
 	"sync"
 )
 
@@ -37,10 +38,29 @@ func (l *LoginLogic) Login(ctx context.Context, loginRequestModel *models.LoginR
 		return nil, errors.New((vErr.Description))
 	}
 	token, err := l.accessTokenLogic.GenerateAccessToken(resp)
+	fmt.Println("resp", resp)
 	if err != nil {
 		return nil, err
 	}
 	return models.LoginResponse{
-		AccessToken: token,
+		AccessToken:  token,
+		Profile:      resp.Profile,
+		RefreshToken: resp.RefreshToken,
 	}, nil
+}
+
+func (l *LoginLogic) GetUserByUid(ctx context.Context, uid string) (interface{}, error) {
+	resp, vErr := loginLogicInstance.loginRadius.GetUserByUid(ctx, uid)
+	if vErr != nil {
+		return nil, errors.New((vErr.Description))
+	}
+	return resp, nil
+}
+
+func (l *LoginLogic) GetProfile(ctx context.Context, token string) (interface{}, error) {
+	accesstokenJwt, lErr := l.loginRadius.GetProfileByToken(ctx, token)
+	if lErr != nil {
+		return nil, errors.New((lErr.Description))
+	}
+	return accesstokenJwt, nil
 }

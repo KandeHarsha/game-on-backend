@@ -98,6 +98,40 @@ func (c *Config) GetAllOrgs(ctx context.Context) (*models.OrganizationData, *sch
 	return response, nil
 }
 
+func (c *Config) GetUserByUid(ctx context.Context, uid string) (*models.User, *schema.ErrorResponse) {
+	r := lib.Request{
+		Method: http.MethodGet,
+		Path:   c.getPath("/identity/v2/manage/account/" + uid),
+		Query: map[string]string{
+			"apikey":    c.ApiKey,
+			"apisecret": c.ApiSecret,
+		},
+		Response: &models.User{},
+	}
+	if vErr := r.Do(); vErr != nil {
+		return nil, vErr
+	}
+	response := r.Response.(*models.User)
+	return response, nil
+}
+
+func (c *Config) GetProfileByToken(ctx context.Context, accessToken string) (*schema.IdentityResponse, *schema.ErrorResponse) {
+	r := lib.Request{
+		Method: http.MethodGet,
+		Path:   c.getPath("/identity/v2/auth/account"),
+		Query: map[string]string{
+			"apiKey":       c.ApiKey,
+			"access_token": accessToken,
+		},
+		Response: &schema.IdentityResponse{},
+	}
+	if vErr := r.Do(); vErr != nil {
+		return nil, vErr
+	}
+	response := r.Response.(*schema.IdentityResponse)
+	return response, nil
+}
+
 func (c *Config) GetOrg(ctx context.Context, orgId string) (*models.Organization, *schema.ErrorResponse) {
 	r := lib.Request{
 		Method: http.MethodGet,
@@ -130,5 +164,36 @@ func (c *Config) CreateOrg(ctx context.Context, createOrgRequest *models.CreateO
 		return nil, vErr
 	}
 	response := r.Response.(*models.CreateOrgResponse)
+	return response, nil
+}
+
+func (c *Config) AssignRoleToUserInOrg(ctx context.Context, assignRoleRequest *models.AddUserToOrganizationRequest, orgId string, userId string) (*models.AddUserToOrganizationResponse, *schema.ErrorResponse) {
+	r := lib.Request{
+		Method:   http.MethodPut,
+		Path:     c.getPath("/v2/manage/account/" + userId + "/orgcontext/" + orgId + "/roles"),
+		Query:    map[string]string{"apikey": c.ApiKey, "apisecret": c.ApiSecret},
+		Payload:  assignRoleRequest,
+		Response: &models.AddUserToOrganizationResponse{},
+	}
+
+	if vErr := r.Do(); vErr != nil {
+		return nil, vErr
+	}
+	response := r.Response.(*models.AddUserToOrganizationResponse)
+	return response, nil
+}
+
+func (c *Config) UpdateOrgById(ctx context.Context, updateOrgReq *models.UpdateOrgRequest, orgId string) (*models.UpdateOrgRespnse, *schema.ErrorResponse) {
+	r := lib.Request{
+		Method:   http.MethodPut,
+		Path:     c.getPath("/v2/manage/organizations/" + orgId),
+		Query:    map[string]string{"apikey": c.ApiKey, "apisecret": c.ApiSecret},
+		Payload:  updateOrgReq,
+		Response: &models.UpdateOrgRespnse{},
+	}
+	if vErr := r.Do(); vErr != nil {
+		return nil, vErr
+	}
+	response := r.Response.(*models.UpdateOrgRespnse)
 	return response, nil
 }

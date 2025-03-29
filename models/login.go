@@ -1,6 +1,9 @@
 package models
 
-import "errors"
+import (
+	"KandeHarsha/service/loginradius/schema"
+	"errors"
+)
 
 type LoginRequest struct {
 	Email           string `json:"email"`
@@ -18,5 +21,16 @@ func (l *LoginRequest) Validate() error {
 }
 
 type LoginResponse struct {
-	AccessToken string `json:"access_token"`
+	AccessToken  string                  `json:"access_token"`
+	Profile      schema.IdentityResponse `json:"profile"`
+	RefreshToken string                  `json:"refresh_token"`
+}
+
+type User struct {
+	UserName     string
+	Uid          string
+	Roles        []string
+	FullName     string
+	Email        []EmailType
+	CustomFields map[string]string
 }

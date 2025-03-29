@@ -24,7 +24,8 @@ type IdentityResponse struct {
 }
 
 type IdentityResponseWithToken struct {
-	AccessToken string           `json:"access_token"`
-	Profile     IdentityResponse `json:"profile"`
-	ExpiresIn   time.Time        `json:"expires_in"`
+	AccessToken  string           `json:"access_token"`
+	Profile      IdentityResponse `json:"profile"`
+	ExpiresIn    time.Time        `json:"expires_in"`
+	RefreshToken string           `json:"refresh_token"`
 }

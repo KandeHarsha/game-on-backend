@@ -51,3 +51,19 @@ func (o *OrgLogic) CreateOrg(ctx context.Context, orgRequest *models.CreateOrgRe
 	}
 	return resp, nil
 }
+
+func (o *OrgLogic) AddUserToOrg(ctx context.Context, assignRole *models.AddUserToOrganizationRequest, orgId string, userId string) (interface{}, error) {
+	resp, vErr := orgLogicInstance.loginRadius.AssignRoleToUserInOrg(ctx, assignRole, orgId, userId)
+	if vErr != nil {
+		return nil, errors.New((vErr.Description))
+	}
+	return resp, nil
+}
+
+func (o *OrgLogic) UpdateOrg(ctx context.Context, updateOrgRequest *models.UpdateOrgRequest, orgId string) (interface{}, error) {
+	resp, vErr := orgLogicInstance.loginRadius.UpdateOrgById(ctx, updateOrgRequest, orgId)
+	if vErr != nil {
+		return nil, errors.New((vErr.Description))
+	}
+	return resp, nil
+}
